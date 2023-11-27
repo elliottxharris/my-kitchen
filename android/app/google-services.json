@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "476637150536",
+    "project_id": "my-kitchen-89895",
+    "storage_bucket": "my-kitchen-89895.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:476637150536:android:6f40a2e1cc671586c4477d",
+        "android_client_info": {
+          "package_name": "com.example.my_kitchen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "476637150536-ho0qfdk0k4568r9pshg1je6b2ohd4iq3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIrXeCAqg0KLqtofq285BNGmkbNkatSZY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "476637150536-ho0qfdk0k4568r9pshg1je6b2ohd4iq3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "476637150536-cjb549ekiokl2roer4d7j6b3p7vjt5i4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.elliottxharris.my-kitchen"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
