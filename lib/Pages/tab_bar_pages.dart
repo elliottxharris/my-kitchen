@@ -36,8 +36,8 @@ class _TabBarPagesState extends State<TabBarPages> {
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: GNav(
-                color: Theme.of(context).colorScheme.outline,
-                activeColor: Theme.of(context).colorScheme.outline,
+                color: Theme.of(context).colorScheme.inversePrimary,
+                activeColor: Colors.white,
                 tabBackgroundColor: Theme.of(context).colorScheme.tertiary,
                 padding: const EdgeInsets.all(10),
                 gap: 8,

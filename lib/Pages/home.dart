@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_kitchen/Model/ingredient.dart';
+import 'package:my_kitchen/Service/firestore_service.dart';
 import 'package:my_kitchen/Widgets/ingredient_status.dart';
 
 class Home extends StatefulWidget {
@@ -28,19 +30,30 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      appBar: AppBar(
+        title: const Text('Home'),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: SizedBox(
-            height: 130,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: _ingredients.length,
-              itemBuilder: (context, index) =>
-                  IngredientStatus(ingredient: _ingredients[index]),
-            ),
-          ),
+              height: 130,
+              child: StreamBuilder(
+                stream: FireStoreService().getIngredients(),
+                builder: (context, snap) {
+                  if (!snap.hasData) {
+                    return const CircularProgressIndicator();
+                  } else {
+                    final List ingredients = snap.data!.docs;
+                    return ListView.builder(
+                        itemCount: ingredients.length,
+                        itemBuilder: (context, index) => IngredientStatus(
+                              ingredient:
+                                  Ingredient.fromFirebase(ingredients[0]),
+                            ));
+                  }
+                },
+              )),
         ),
       ),
     );
