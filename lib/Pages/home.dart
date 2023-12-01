@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_kitchen/Model/ingredient.dart';
 import 'package:my_kitchen/Service/firestore_service.dart';
+import 'package:my_kitchen/View%20Model/home_page_cubit_state.dart';
+import 'package:my_kitchen/Widgets/custm_date_picker.dart';
+import 'package:my_kitchen/Widgets/custom_text_field.dart';
 import 'package:my_kitchen/Widgets/ingredient_status.dart';
 
 class Home extends StatefulWidget {
@@ -12,46 +16,92 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final List<Ingredient> _ingredients = [
-    Ingredient(
-      name: 'Ground Beef',
-      description: 'Cow meat',
-      boughtDate: DateTime.now(),
-      expirationDate: DateTime.now().subtract(const Duration(days: 5)),
-    ),
-    Ingredient(
-      name: 'Chicken Breast',
-      description: 'Lean meat',
-      boughtDate: DateTime.now(),
-      expirationDate: DateTime.now().add(const Duration(days: 4)),
-    ),
-  ];
+  TextEditingController nameFieldController = TextEditingController();
+  TextEditingController descriptionFieldController = TextEditingController();
+  DateTime boughtDate = DateTime.now();
+  DateTime expirationDate = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomePageCubit>().fetchIngredients();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (dialogContext) => SimpleDialog(
+                  title: const Text('Add Ingredient'),
+                  children: [
+                    CustomTextField(
+                      controller: nameFieldController,
+                      hint: 'Name',
+                    ),
+                    CustomTextField(
+                      controller: descriptionFieldController,
+                      hint: 'Description',
+                    ),
+                    CustomDatePicker(
+                      keyText: 'Bought Date',
+                      selectedDate: (date) => date = boughtDate,
+                    ),
+                    CustomDatePicker(
+                      keyText: 'Expiration Date',
+                      selectedDate: (date) => date = expirationDate,
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: TextButton(
+                        onPressed: () async {
+                          Navigator.pop(dialogContext);
+                          await context.read<HomePageCubit>().addIngredient(
+                                Ingredient(
+                                  name: nameFieldController.text,
+                                  description: descriptionFieldController.text,
+                                  boughtDate: boughtDate,
+                                  expirationDate: expirationDate,
+                                ),
+                              );
+                        },
+                        child: const Text('ADD'),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+            icon: const Icon(Icons.add),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: SizedBox(
               height: 130,
-              child: StreamBuilder(
-                stream: FireStoreService().getIngredients(),
-                builder: (context, snap) {
-                  if (!snap.hasData) {
+              child: BlocBuilder<HomePageCubit, HomePageCubitState>(
+                builder: (context, state) {
+                  if (state is HomePageCubitLoading) {
                     return const CircularProgressIndicator();
-                  } else {
-                    final List ingredients = snap.data!.docs;
+                  } else if (state is HomePageCubitInitialized) {
+                    final List ingredients = state.ingredients;
                     return ListView.builder(
-                        itemCount: ingredients.length,
-                        itemBuilder: (context, index) => IngredientStatus(
-                              ingredient:
-                                  Ingredient.fromFirebase(ingredients[0]),
-                            ));
+                      scrollDirection: Axis.horizontal,
+                      itemCount: ingredients.length,
+                      itemBuilder: (context, index) =>
+                          IngredientStatus(ingredient: ingredients[index]),
+                    );
                   }
+
+                  //TODO display proper error
+                  return const Text('Error');
                 },
               )),
         ),

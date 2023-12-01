@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_kitchen/Model/ingredient.dart';
 
 class FireStoreService {
+  static final FireStoreService current = FireStoreService();
+
   final CollectionReference _ingredients =
       FirebaseFirestore.instance.collection('ingredients');
 
