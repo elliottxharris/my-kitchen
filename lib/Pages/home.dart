@@ -50,11 +50,11 @@ class _HomeState extends State<Home> {
                     ),
                     CustomDatePicker(
                       keyText: 'Bought Date',
-                      selectedDate: (date) => date = boughtDate,
+                      selectedDate: (date) => boughtDate = date,
                     ),
                     CustomDatePicker(
                       keyText: 'Expiration Date',
-                      selectedDate: (date) => date = expirationDate,
+                      selectedDate: (date) => expirationDate = date,
                     ),
                     Align(
                       alignment: Alignment.bottomRight,
